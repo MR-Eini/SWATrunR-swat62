@@ -52,8 +52,7 @@ write_calibration <- function(thread_path, parameter, calibration, run_index,
       unlist(.) %>%
       # map_dbl(., ~.x) %>%
       set_names(., parameter$definition$parameter) %>%
-      sprintf("%.15f", .) %>%
-      str_sub(., 1, 15)
+      sprintf("%.15g", .)
 
     col_format <- c("%-12s", "%8s", "%16s", "%16s", rep("%8s", ncol(calibration) - 4))
 
@@ -65,7 +64,7 @@ write_calibration <- function(thread_path, parameter, calibration, run_index,
 
     calibration <- map2(calibration, col_format, ~sprintf(.y, .x)) %>%
       map_df(., ~ str_replace_all(.x, 'NA', '')) %>%
-      apply(., 1, paste, collapse = "") %>%
+      apply(., 1, paste, collapse = " ") %>%
       c("Number of parameters:", sprintf("%2d",length(cal_pos)), col_names, .) %>%
       str_trim(.)
 
@@ -113,6 +112,12 @@ update_plant_par <- function(thread_path, parameter, is_plant_par, run_index, i_
 
   }
   plant_par <- select(plant_par, - file_name, - file_code)
+  for (field in intersect(c("days_mat", "yrs_mat"), names(plant_par))) {
+    value <- plant_par[[field]]
+    if (any(!is.finite(value) | value != trunc(value))) {
+      stop("plants.plt ", field, " must contain whole numbers.")
+    }
+  }
   plt_path <- paste0(thread_path, '/plants.plt')
   write_lines('plants.plt updated with SWATrunR', file = plt_path)
   fwrite(plant_par, plt_path, append = TRUE, sep = '\t', col.names = TRUE)
@@ -222,12 +227,12 @@ read_unit_conditions <- function(project_path, parameter) {
 #' @param file Path to the object file
 #'
 #' @importFrom dplyr %>%
-#' @importFrom readr read_table2 cols col_character col_double
+#' @importFrom readr read_table cols col_character col_double
 #'
 #' @keywords internal
 #'
 get_tbl_column <- function(file, col_i) {
-  suppressWarnings(read_table2(file, skip = 1,
+  suppressWarnings(read_table(file, skip = 1,
               col_types = cols(id = col_double(),
                                .default = col_character()))) %>%
     .[[col_i]]

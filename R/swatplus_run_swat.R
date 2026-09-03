@@ -500,6 +500,8 @@ run_swatplus <- function(project_path, output, parameter = NULL,
   ## make and register cluster, create table that links the parallel worker
   ## with the created parallel thread folders in '.model_run'
   cl <- makeCluster(n_thread)
+  on.exit(try(stopCluster(cl), silent = TRUE), add = TRUE)
+  parallel::clusterCall(cl, function(paths) .libPaths(paths), .libPaths())
   worker <- tibble(worker_id = parSapply(cl, 1:n_thread,
                                          function(x) paste(Sys.info()[['nodename']],
                                                            Sys.getpid(), sep = "-")),
@@ -564,7 +566,7 @@ run_swatplus <- function(project_path, output, parameter = NULL,
         save_error_log(save_path, model_output, parameter, run_index, i_run)
         # update_run_log(save_path, run_index[i_run], 'time_out')
       }
-    } else if(nchar(msg$stderr) == 0) {
+    } else if(msg$status == 0L && grepl("Execution successfully completed", msg$stdout, fixed = TRUE)) {
       model_output <- read_swatplus_output(output, thread_path, split_units)
 
       has_end_date <- check_for_end_date(model_output, model_setup$end_date)
@@ -592,7 +594,7 @@ run_swatplus <- function(project_path, output, parameter = NULL,
       out_msg <- str_split(msg$stdout, '\r\n|\r|\n', simplify = TRUE) %>%
         .[max(1, length(.) - 10):length(.)]
       err_msg <- str_split(msg$stderr, '\r\n|\r|\n', simplify = TRUE)
-      err_msg <- c('Last output:', out_msg, 'Error:', err_msg)
+      err_msg <- c(paste('SWAT exit status:', msg$status), 'Last output:', out_msg, 'Error:', err_msg)
       model_output <- err_msg
       if(!is.null(save_path)) {
         save_error_log(save_path, model_output, parameter, run_index, i_run)

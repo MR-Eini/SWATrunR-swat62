@@ -75,14 +75,13 @@ setup_swatplus <- function(project_path, parameter, output,
   ## Add calibration.cal to the file.cio
   ## This ensures that the calibration.cal that is added to indicate
   ## parameter changes are read by SWAT+
-  model_setup$file.cio[22] <-
-    'chg               cal_parms.cal     calibration.cal   null              null              null              null              null              null              null'
-
-  print_table <- model_setup$print.prt[- c(1:10)] %>%
-    str_trim(.) %>%
-    str_split(., pattern = '[:space:]+') %>%
-    map_df(., ~tibble(objects = .x[1], day = .x[2],
-                      mon = .x[3], yr = .x[3], aa = .x[4]))
+  cio_tokens <- strsplit(trimws(model_setup$file.cio), "[[:space:]]+")
+  chg <- which(vapply(cio_tokens, function(x) identical(x[1L], "chg"), logical(1)))
+  if (length(chg) != 1L || length(cio_tokens[[chg]]) < 3L) {
+    stop("Missing or malformed file.cio chg section.")
+  }
+  cio_tokens[[chg]][3L] <- "calibration.cal"
+  model_setup$file.cio[chg] <- paste(cio_tokens[[chg]], collapse = " ")
 
   ## Define simulation period
   if(xor(is.null(start_date), is.null(end_date))) {
@@ -91,6 +90,9 @@ setup_swatplus <- function(project_path, parameter, output,
     ## Determine required date indices for writing to time.sim
     start_date <- ymd(start_date)
     end_date   <- ymd(end_date)
+    if (anyNA(c(start_date, end_date)) || start_date > end_date) {
+      stop("Invalid or reversed simulation dates.")
+    }
     time_interval <- interval(start_date, end_date)
     start_year    <- year(int_start(time_interval))
     start_jdn     <- yday(int_start(time_interval))
@@ -127,11 +129,8 @@ setup_swatplus <- function(project_path, parameter, output,
   ## than 1 are omitted, as any information loss should be avoided. Filtering
   ## of time windows can be done later in a modeling workflow
   if(is.null(years_skip) & is.null(start_date_print)) {
-    print_time <- model_setup$print.prt[3] %>%
-      strsplit(., "\\s+") %>%
-      unlist(.) %>%
-      .[nchar(.) > 0] %>%
-      as.numeric(.)
+    print_time <- as.numeric(SWATreadR::swat_control_get(
+      model_setup$print.prt, c("nyskip", "day_start", "yrc_start")))
 
     years_skip <- print_time[1]
     if (years_skip > 0) {
@@ -176,69 +175,28 @@ setup_swatplus <- function(project_path, parameter, output,
     }
   }
 
-  model_setup$print.prt[3] <-
-    c(max(years_skip, 0, na.rm = TRUE), print_jdn, print_year, 0, 0, 1) %>%
-    sprintf("%-11d", .) %>%
-    paste(., collapse = '')
-
+  model_setup$print.prt <- SWATreadR::swat_control_set(
+    model_setup$print.prt,
+    c(nyskip = max(years_skip, 0, na.rm = TRUE), day_start = print_jdn,
+      yrc_start = print_year, day_end = 0, yrc_end = 0, interval = 1))
   model_setup$years_skip <- years_skip
   model_setup$start_date_print <- start_date_print
 
-  ## Output interval settings
-  ## Set output_interval to 'daily' as default if not provided by user.
-  # if(is.null(output_interval)) output_interval <- "d"
-  #
-  # if(output_interval == 'm') {
-  #   t_int <- seq(start_date_print, end_date, by = 'm')
-  #   if(length(t_int) == 1 & end_date != ceiling_date(end_date, unit = 'm')-1) {
-  #     stop('Monthly simulation outputs require a simulation period of ',
-  #          'at least one full month!')
-  #   }
-  # }
-  print_table[,2:5] <- "n"
-
-  # Remove crop, mgt, and FDC outputs from objects as they are not defined there
-  objects_in_tbl <- filter(output, ! file %in% c('basin_crop_yld', 'fdcout', 'mgtout'))
-  # Change from channel_sdmorph to channel_sd as the first is written when the
-  # second is defined
-  objects_in_tbl$file[objects_in_tbl$file == 'channel_sdmorph'] <- 'channel_sd'
-  objects_in_tbl$file[grepl('_pest_',objects_in_tbl$file_full)] <- 'pest'
-
-  if(nrow(objects_in_tbl) > 0) {
-    for(i in 1:nrow(objects_in_tbl)) {
-      print_table[print_table$objects == objects_in_tbl$file[i],
-                  objects_in_tbl$time_interval[i]] <- 'y'
-    }
-  }
-
-  # Set all outputs to no, except the output files defined in output and only
-  # for the defined time interval
-  # print_table[print_table$objects %in% object_names, output_interval] <- "y"
-
-  print_table <- print_table %>%
-    mutate(objects = sprintf("%-16s", objects),
-           day = sprintf("%14s", day),
-           mon = sprintf("%14s", mon),
-           yr  = sprintf("%14s", yr),
-           aa  = sprintf("%14s", aa)) %>%
-    apply(., 1, paste, collapse = "")
-
-  model_setup$print.prt <- c(model_setup$print.prt[1:10], print_table)
-
-  # So far avoid any other output files types to be written
-  model_setup$print.prt[7] <- "n             n             n             "
-
-  # Print also FDC and mgt output files if defined in outputs
-  prt_9 <- rep('n', 4)
-  if ('mgtout' %in% output$file) prt_9[2] <- 'y'
-  if ('fdcout' %in% output$file) prt_9[4] <- 'y'
-  prt_9 <- paste(sprintf('%-14s',prt_9), collapse = '')
-
-  model_setup$print.prt[9] <- prt_9
+  objects <- filter(output, !file %in% c("basin_crop_yld", "fdcout", "mgtout"))
+  objects$file[objects$file == "channel_sdmorph"] <- "channel_sd"
+  objects$file[grepl("_pest_", objects$file_full)] <- "pest"
+  intervals <- c(day = "daily", mon = "monthly", yr = "yearly", aa = "avann")
+  requested <- split(unname(intervals[objects$time_interval]), objects$file)
+  model_setup$print.prt <- SWATreadR::swat_print_objects(model_setup$print.prt, requested)
+  crop <- output$time_interval[output$file == "basin_crop_yld"]
+  crop_flag <- if (all(c("yr", "aa") %in% crop)) "b" else if ("aa" %in% crop) "a" else if ("yr" %in% crop) "y" else "n"
+  model_setup$print.prt <- SWATreadR::swat_print_options(model_setup$print.prt,
+    mgtout = if ("mgtout" %in% output$file) "y" else "n",
+    fdcout = if ("fdcout" %in% output$file) "y" else "n", crop_yld = crop_flag)
 
   if(!is.null(parameter)) {
     parameter$definition <- filter(parameter$definition, file_name != 'pdb')
-    model_setup$calibration.cal <- map(1:nrow(parameter$definition),
+    model_setup$calibration.cal <- map(seq_len(nrow(parameter$definition)),
                                        ~ parameter$definition[.x,]) %>%
       map(., ~ setup_calibration_cal(.x, unit_conds)) %>%
       bind_rows(.)
@@ -299,7 +257,7 @@ setup_calibration_cal <- function(par_def_i, unit_conds) {
 
   if(any(c('hsg', 'texture', 'plant', 'landuse') %in% names(par_def_i))) {
       soil_luse <- select(par_def_i, any_of(c('hsg', 'texture', 'plant', 'landuse'))) %>%
-        select(., !tidyselect:::where(is.na)) %>% # will be replaced when where is in the tidyselect namespace
+        select(., !tidyselect::where(~ all(is.na(.x)))) %>% # will be replaced when where is in the tidyselect namespace
         map(., ~ .x)
       cond_tbl <- map2_df(soil_luse, names(soil_luse), ~ add_soil_luse(.x, .y, unit_conds$conds))
   } else {
@@ -387,7 +345,7 @@ get_value_range <- function(cond) {
     stop("For parameter conditioning with 'lyr', 'year', and 'day' only single",
          "values or upper lower bound implemented yet!")
   }
-  return(c(min(condition), max(condition)))
+  return(c(min(cond), max(cond)))
 }
 
 #' Add the unit values for which objects the parameter change should be applied

@@ -150,11 +150,18 @@ read_swatplus_output <- function(output, thread_path, split_units) {
 #'
 read_output_i <- function(output_i, col_names_i, thread_path,
                           date_cols, add_cols = NULL, n_skip) {
-  fread(thread_path%//%output_i$file_full[1], skip = n_skip) %>%
-    as_tibble(.) %>%
-    .[,1:length(col_names_i)] %>%
-    set_names(col_names_i) %>%
-    select(., all_of(c(date_cols, 'unit', add_cols, output_i$variable))) %>%
+  file_path <- thread_path%//%output_i$file_full[1]
+  if (grepl("^(hru|basin)_(wb|pw)_", output_i$file_full[1]) && n_skip == 3L) {
+    tbl <- SWATreadR::read_swat_output(file_path)
+    return(tbl %>% select(all_of(c(date_cols, "unit", add_cols, output_i$variable))) %>%
+      filter(unit %in% unique(unlist(output_i$unit))))
+  }
+  tbl <- fread(file_path, skip = n_skip, header = FALSE)
+  if (ncol(tbl) != length(col_names_i)) {
+    stop("Output header/data column mismatch in ", output_i$file_full[1])
+  }
+  tbl %>% as_tibble(.) %>% set_names(col_names_i) %>%
+    select(., all_of(c(date_cols, "unit", add_cols, output_i$variable))) %>%
     filter(unit %in% (output_i$unit %>% unlist(.) %>% unique(.)))
 }
 
@@ -205,20 +212,12 @@ read_basin_yld <- function(output_i, thread_path) {
 read_mgtout <- function(output_i, thread_path) {
   file_path <- paste0(thread_path, '/mgt_out.txt')
 
-  mgt <- read_lines(file_path, skip = 3, lazy = FALSE) %>%
-    unlist() %>%
-    str_trim(.) %>%
-    str_split(., '\t[:space:]+|[:space:]+') %>%
-    map(., ~ .x[1:21]) %>%
-    unlist() %>%
-    matrix(., nrow = 21) %>%
-    t() %>%
-    as_tibble(., .name_repair = 'minimal') %>%
-    set_names(., c('hru', 'year', 'mon', 'day', 'plant_name', 'operation',
-                   'phubase', 'phu', 'soil_water', 'bioms',
-                   'surf_rsd', 'soil_no3', 'soil_solp', 'yld',
-                   'p_strs', 'n_strs', 'tmp_strs', 'wat_strs', 'aer_strs',
-                   'v6', 'v7')) %>%
+  mgt <- SWATreadR::read_swat_mgt(file_path)
+  aliases <- c("crop/fert/pest" = "plant_name", phuplant = "phu",
+    plant_bioms = "bioms", op_var = "yld", var1 = "p_strs", var2 = "n_strs",
+    var3 = "tmp_strs", var4 = "wat_strs", var5 = "aer_strs", var6 = "v6", var7 = "v7")
+  names(mgt)[match(names(aliases), names(mgt))] <- unname(aliases)
+  mgt <- mgt %>%
     filter(operation == 'HARVEST') %>%
     select(hru, year, plant_name, all_of(output_i$variable)) %>%
     set_names(c('hru', 'year', 'plant_name', output_i$name))
