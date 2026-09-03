@@ -1,3 +1,16 @@
+<!-- swat62-version-navigation -->
+**Review the SWAT+ 62 package changes**
+
+| Source snapshot | Package version | Browse code |
+| --- | --- | --- |
+| Before this update | 1.1.0.9017 | [Old source](https://github.com/MR-Eini/SWATrunR-swat62/tree/before-swat62-update) |
+| Tested SWAT+ 62 update | 1.1.0.9019 | [Updated source](https://github.com/MR-Eini/SWATrunR-swat62/tree/swat62-v1.1.0.9019) |
+
+**[Compare old and updated code](https://github.com/MR-Eini/SWATrunR-swat62/compare/before-swat62-update...swat62-v1.1.0.9019?w=1)** - GitHub highlights removed lines in red and added lines in green. Whitespace-only differences are hidden in this link; [show the complete diff](https://github.com/MR-Eini/SWATrunR-swat62/compare/before-swat62-update...swat62-v1.1.0.9019) if needed.
+
+[Version history and change summary](VERSION-HISTORY.md) explains the baseline and tested scope. Original author attribution and upstream Git history are preserved.
+<!-- /swat62-version-navigation -->
+
 > **SWAT+ 62 development update:** See [compatibility and test coverage](COMPATIBILITY.md). This repository is maintained under MR-Eini; the upstream README and attribution follow.
 
 # SWATrunR <img src="man/figures/swatrunr_hex.svg" align="right" />
