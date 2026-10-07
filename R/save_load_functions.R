@@ -249,16 +249,16 @@ initialize_save_file <- function(save_path, parameter, run_info, run_index) {
   return(run_info)
 }
 
-#' Update a time stamp in the run_log table
-#'
-#' @param save_path Path of the sql data base for incrementally saving simulations
-#' @param run_index IDs of parameter sets for which simulations should be run
-#'
-#' @importFrom DBI dbConnect dbDisconnect dbWriteTable
-#' @importFrom RSQLite SQLite sqliteSetBusyHandler
-#'
-#' @keywords internal
-#'
+# Update a time stamp in the run_log table
+#
+# @param save_path Path of the sql data base for incrementally saving simulations
+#
+# @importFrom DBI dbConnect dbDisconnect dbWriteTable
+# @importFrom RSQLite SQLite sqliteSetBusyHandler
+#
+# @keywords internal
+#
+# @param run_info Value supplied as run_info to this internal helper.
 update_sim_log <- function(save_path, run_info) {
   inputs_db <- dbConnect(SQLite(), paste0(save_path, "/inputs.sqlite"))
   sim_log <- map_df(run_info$simulation_log, ~ as.character(.x))
@@ -266,17 +266,17 @@ update_sim_log <- function(save_path, run_info) {
   dbDisconnect(inputs_db)
 }
 
-#' Update a time stamp in the run_log table
-#'
-#' @param save_path Path of the sql data base for incrementally saving simulations
-#' @param run_index IDs of parameter sets for which simulations should be run
-#'
-#' @importFrom DBI dbConnect dbDisconnect dbExecute dbSendQuery
-#' @importFrom lubridate now
-#' @importFrom RSQLite SQLite sqliteSetBusyHandler
-#'
-#' @keywords internal
-#'
+# Update a time stamp in the run_log table
+#
+# @param save_path Path of the sql data base for incrementally saving simulations
+# @param run_index IDs of parameter sets for which simulations should be run
+#
+# @importFrom DBI dbConnect dbDisconnect dbExecute dbSendQuery
+# @importFrom lubridate now
+# @importFrom RSQLite SQLite sqliteSetBusyHandler
+#
+# @keywords internal
+#
 # update_run_log <- function(save_path, run_id, col_name) {
 #   log_time <- as.character(now())
 #   inputs_db <- dbConnect(SQLite(), paste0(save_path, "/inputs.sqlite"))
@@ -298,6 +298,7 @@ update_sim_log <- function(save_path, run_info) {
 #'
 #' @keywords internal
 #'
+#' @param convert Whether to compare the tables after conversion to matrices.
 compare_tables <- function(tbl_sim, tbl_df, txt, convert = FALSE) {
   if(convert) {
     tbl_sim <- as.matrix(tbl_sim)
@@ -820,13 +821,14 @@ is_identical_tbl <- function(x,y) {
 #' Convert the information on available runs for the simulated variables into
 #' strings that are printed
 #'
-#' @param tbl overview table that provides meta data for all simulation runs for
+#' @param vals overview table that provides meta data for all simulation runs for
 #'   all variables saved in the data bases
 #'
 #' @importFrom dplyr %>%
 #' @importFrom purrr map map2 map2_chr
 #' @keywords internal
 #'
+#' @param sep Separator used between the bounds of a range.
 group_values <- function(vals, sep = ':') {
   if(all(is.na(vals))) {
     ''

@@ -23,13 +23,12 @@ format_swat2012_parameter <- function(parameter, swat_vers) {
 #'
 #' @param project_path Path to the SWAT project folder on the hard drive
 #'   (i.e. txtinout folder)
-#' @param par_constrain Table providing the file constraints for the respective
-#'   parameter that will be modified
 #'
 #' @importFrom dplyr %>%
 #' @importFrom purrr map set_names
 #' @keywords internal
 #'
+#' @param file_meta Value supplied as file_meta to this internal helper.
 read_swat2012_files <- function(project_path, file_meta) {
 
   list_par_files <- c("pnd", "rte", "sub", "swq", "hru", "gw",
@@ -345,13 +344,13 @@ get_table <- function(file_i, table_pos, col_pos, col_names, fun) {
 
 #' Split one line in a parameter file into the individual values of the table
 #'
-#' @param file_i The i'th parameter file for a file suffix
 #' @param start Index vector indicating the start values of a value
 #' @param end Index vector indicating the end values of a value
 #' @importFrom purrr map2_chr
 #' @importFrom stringr str_sub
 #' @keywords internal
 #'
+#' @param chr Value supplied as chr to this internal helper.
 split_line <- function(chr, start, end) {
   map2_chr(start, end, ~ str_sub(chr, .x, .y)) %>%
     as.numeric(.)

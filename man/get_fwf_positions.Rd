@@ -7,9 +7,11 @@
 get_fwf_positions(output_i, thread_path, tbl_pos)
 }
 \arguments{
+\item{output_i}{Output defined to read from the SWAT model results}
+
 \item{thread_path}{Path to respective thread where SWAT was executed}
 
-\item{output}{Output defined to read from the SWAT model results}
+\item{tbl_pos}{Position of the first data row in the output file.}
 }
 \description{
 Derive the fixed with positions of the columns in the SWAT output files

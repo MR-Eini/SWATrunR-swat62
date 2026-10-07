@@ -8,8 +8,10 @@ strings that are printed}
 group_values(vals, sep = ":")
 }
 \arguments{
-\item{tbl}{overview table that provides meta data for all simulation runs for
+\item{vals}{overview table that provides meta data for all simulation runs for
 all variables saved in the data bases}
+
+\item{sep}{Separator used between the bounds of a range.}
 }
 \description{
 Convert the information on available runs for the simulated variables into

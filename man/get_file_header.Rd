@@ -7,11 +7,11 @@
 get_file_header(output_i, tbl_pos, thread_path)
 }
 \arguments{
+\item{output_i}{Output defined to read from the SWAT model results}
+
+\item{tbl_pos}{Position of the first data row in the output file.}
+
 \item{thread_path}{Path to respective thread where SWAT was executed}
-
-\item{output}{Output defined to read from the SWAT model results}
-
-\item{fwf_pos}{Fixed width positions for the variables in the output files}
 }
 \description{
 Read the column names for the SWAT output files

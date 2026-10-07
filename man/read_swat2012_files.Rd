@@ -11,8 +11,7 @@ read_swat2012_files(project_path, file_meta)
 \item{project_path}{Path to the SWAT project folder on the hard drive
 (i.e. txtinout folder)}
 
-\item{par_constrain}{Table providing the file constraints for the respective
-parameter that will be modified}
+\item{file_meta}{Value supplied as file_meta to this internal helper.}
 }
 \description{
 Read the original swat parameter values from the parameter files in

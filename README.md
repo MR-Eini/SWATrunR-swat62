@@ -4,9 +4,9 @@
 | Source snapshot | Package version | Browse code |
 | --- | --- | --- |
 | Before this update | 1.1.0.9017 | [Old source](https://github.com/MR-Eini/SWATrunR-swat62/tree/before-swat62-update) |
-| Tested SWAT+ 62 update | 1.1.0.9019 | [Updated source](https://github.com/MR-Eini/SWATrunR-swat62/tree/swat62-v1.1.0.9019) |
+| Tested SWAT+ 62 update | 1.1.0.9020 | [Updated source](https://github.com/MR-Eini/SWATrunR-swat62/tree/swat62-v1.1.0.9020) |
 
-**[Compare old and updated code](https://github.com/MR-Eini/SWATrunR-swat62/compare/before-swat62-update...swat62-v1.1.0.9019?w=1)** - GitHub highlights removed lines in red and added lines in green. Whitespace-only differences are hidden in this link; [show the complete diff](https://github.com/MR-Eini/SWATrunR-swat62/compare/before-swat62-update...swat62-v1.1.0.9019) if needed.
+**[Compare old and updated code](https://github.com/MR-Eini/SWATrunR-swat62/compare/before-swat62-update...swat62-v1.1.0.9020?w=1)** - GitHub highlights removed lines in red and added lines in green. Whitespace-only differences are hidden in this link; [show the complete diff](https://github.com/MR-Eini/SWATrunR-swat62/compare/before-swat62-update...swat62-v1.1.0.9020) if needed.
 
 [Version history and change summary](VERSION-HISTORY.md) explains the baseline and tested scope. Original author attribution and upstream Git history are preserved.
 <!-- /swat62-version-navigation -->

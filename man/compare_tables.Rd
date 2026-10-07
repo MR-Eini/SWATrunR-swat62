@@ -2,7 +2,7 @@
 % Please edit documentation in R/save_load_functions.R
 \name{compare_tables}
 \alias{compare_tables}
-\title{Update a time stamp in the run_log table}
+\title{Compare a table in the current SWAT simulation with the one saved in 'save_file'}
 \usage{
 compare_tables(tbl_sim, tbl_df, txt, convert = FALSE)
 }
@@ -13,23 +13,9 @@ compare_tables(tbl_sim, tbl_df, txt, convert = FALSE)
 
 \item{txt}{Text string to be added in the error message.}
 
-\item{save_path}{Path of the sql data base for incrementally saving simulations}
-
-\item{run_index}{IDs of parameter sets for which simulations should be run}
+\item{convert}{Whether to compare the tables after conversion to matrices.}
 }
 \description{
-Update a time stamp in the run_log table
+Compare a table in the current SWAT simulation with the one saved in 'save_file'
 }
-\keyword{'save_file'}
-\keyword{Compare}
-\keyword{SWAT}
-\keyword{a}
-\keyword{current}
-\keyword{in}
 \keyword{internal}
-\keyword{one}
-\keyword{saved}
-\keyword{simulation}
-\keyword{table}
-\keyword{the}
-\keyword{with}

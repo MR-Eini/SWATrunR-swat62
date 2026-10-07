@@ -22,6 +22,7 @@ run_swatplus(
   add_date = TRUE,
   split_units = TRUE,
   run_in_project = FALSE,
+  use_existing_cal = FALSE,
   refresh = TRUE,
   keep_folder = FALSE,
   quiet = FALSE,
@@ -168,6 +169,15 @@ is generated and simulations are run in the thread folders. If \code{TRUE} the
 simulation will be performed directly in the \code{project_path}. This is only
 allowed for single simulation runs (No or a single parameter set provided).
 \strong{Caution:} This option can overwrite the original model input files!}
+
+\item{use_existing_cal}{Should the simulation run use the calibration.cal
+file which is provided in the SWAT+ project folder? If \code{FALSE} (default)
+the simulation will be either run with the defined \code{parameter} set or
+without a calibration.cal. If \code{TRUE} then the calibration.cal which
+already exists in the project folder will be used.
+
+If both, \code{parameter} is defined and \code{use_existing_cal = TRUE} the simulation
+will not be run.}
 
 \item{refresh}{(optional) Rewrite existing '.model_run' folder. If \code{TRUE}
 (default value and recommended) always forces that .model_run' is newly

@@ -150,7 +150,7 @@
 #'   allowed for single simulation runs (No or a single parameter set provided).
 #'   **Caution:** This option can overwrite the original model input files!
 #'
-#' @param use_exiting_cal Should the simulation run use the calibration.cal
+#' @param use_existing_cal Should the simulation run use the calibration.cal
 #'   file which is provided in the SWAT+ project folder? If `FALSE` (default)
 #'   the simulation will be either run with the defined `parameter` set or
 #'   without a calibration.cal. If `TRUE` then the calibration.cal which

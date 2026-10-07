@@ -49,6 +49,8 @@ channel IDs e.g. in \code{'channel_sd'} or \verb{'channel_sdmorph_*} output file
 In SWAT2012 output files \code{unit} is the  the reach, subbasin, or HRU ID
 defined by the columns 'RCH', 'SUB', or 'HRU' in the respective SWAT2012
 output file.}
+
+\item{label}{Optional crop or output labels to retain from labeled outputs.}
 }
 \value{
 A table with the columns 'file', 'variable', 'unit', and 'label'.

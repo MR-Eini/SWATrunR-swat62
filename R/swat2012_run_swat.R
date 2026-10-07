@@ -302,13 +302,15 @@
 #' ```
 #'
 #' @examples
+#' \dontrun{
 #' # Install the SWATdata R package which provides a SWAT+ demo project
 #' if(!'SWATdata' %in% installed.packages()) {
 #'   remotes::install_github('chrisschuerz/SWATdata')
 #' }
 #'
 #' # Use a temporary dir for the demo project
-#' tmp_dir <- tempdir()
+#' tmp_dir <- tempfile("swatrunr-demo-")
+#' dir.create(tmp_dir)
 #'
 #' # Load a SWAT2012 demo project
 #' proj_path <- load_demo(dataset = 'project',
@@ -333,7 +335,7 @@
 #'
 #' # Delete demo project folder
 #' unlink(tmp_dir, recursive = TRUE, force = TRUE)
-#'
+#' }
 #'
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom dplyr mutate %>%

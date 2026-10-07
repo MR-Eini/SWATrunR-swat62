@@ -87,6 +87,7 @@
 #'                                      variable = "ET",
 #'                                      unit = 5))
 #'
+#' @param label Optional crop or output labels to retain from labeled outputs.
 define_output <- function(file, variable = NULL, unit = NULL, label = NULL){
   stopifnot(is.character(file))
 

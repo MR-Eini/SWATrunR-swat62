@@ -156,7 +156,11 @@ read_output_i <- function(output_i, col_names_i, thread_path,
     return(tbl %>% select(all_of(c(date_cols, "unit", add_cols, output_i$variable))) %>%
       filter(unit %in% unique(unlist(output_i$unit))))
   }
-  tbl <- fread(file_path, skip = n_skip, header = FALSE)
+  tbl <- withCallingHandlers(
+    fread(file = file_path, skip = n_skip, header = FALSE, sep = " ", quote = ""),
+    warning = function(w) stop("Cannot safely parse ", output_i$file_full[1],
+                               ": ", conditionMessage(w), call. = FALSE)
+  )
   if (ncol(tbl) != length(col_names_i)) {
     stop("Output header/data column mismatch in ", output_i$file_full[1])
   }

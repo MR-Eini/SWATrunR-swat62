@@ -71,7 +71,7 @@ get_n_parallel <- function(n_thread, n_scenario, n_parameter) {
 #' Check the names of the passed input arguments and trigger error if argument
 #' is not supported by any of the run functions.
 #'
-#' @param arg_names Character vector of provided input arguments
+#' @param dot_args Character vector of provided input arguments
 #' @param version Version of the SWAT project, one of 'plus', '2012'
 #'
 #' @returns Error message if argument is not supported

@@ -66,14 +66,14 @@ extract_swat2012_output_i <- function(out_tbl_i, out_def_i, split_units) {
 
 #' Read the column names for the SWAT output files
 #'
-#' @param output Output defined to read from the SWAT model results
-#' @param fwf_pos Fixed width positions for the variables in the output files
+#' @param output_i Output defined to read from the SWAT model results
 #' @param thread_path Path to respective thread where SWAT was executed
 #'
 #' @importFrom dplyr %>%
 #' @importFrom readr read_lines
 #' @keywords internal
 #'
+#' @param tbl_pos Position of the first data row in the output file.
 get_file_header <- function(output_i, tbl_pos, thread_path) {
   header <- read_lines(file = thread_path%//%output_i, n_max = tbl_pos, lazy = FALSE) %>%
     .[tbl_pos] %>%
@@ -89,7 +89,7 @@ get_file_header <- function(output_i, tbl_pos, thread_path) {
 
 #' Derive the fixed with positions of the columns in the SWAT output files
 #'
-#' @param output Output defined to read from the SWAT model results
+#' @param output_i Output defined to read from the SWAT model results
 #' @param thread_path Path to respective thread where SWAT was executed
 #'
 #' @importFrom dplyr %>%
@@ -97,6 +97,7 @@ get_file_header <- function(output_i, tbl_pos, thread_path) {
 #' @importFrom stringr str_detect str_locate str_locate_all str_sub
 #' @keywords internal
 #'
+#' @param tbl_pos Position of the first data row in the output file.
 get_fwf_positions <- function(output_i, thread_path, tbl_pos) {
   header_line <- read_lines(file = thread_path%//%output_i,
                             n_max = tbl_pos - 1, lazy = FALSE)[tbl_pos - 1]

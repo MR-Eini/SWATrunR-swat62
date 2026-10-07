@@ -11,7 +11,7 @@ add_soil_luse(cond, var, cond_all)
 
 \item{var}{Variable to which the condition is applied}
 
-\item{conds_all}{List of possible values for condition variables ('hsg',
+\item{cond_all}{List of possible values for condition variables ('hsg',
 'texture', 'plant', 'landuse').}
 }
 \value{

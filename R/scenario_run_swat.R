@@ -78,7 +78,6 @@
 #'      output variables which were passed with the input argument `output` and
 #'      defined with `define_output()`.
 #'
-#' @examples
 #'
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom dplyr mutate %>%

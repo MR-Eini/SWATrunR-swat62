@@ -3,7 +3,6 @@
 
 #' Prepare run info for the simulation experiment
 #'
-#' @param sim_results List of simulation results from the SWAT model runs
 #' @param model_setup List of model configurations
 #' @param output Table of defined output variables
 #' @param project_path Path to the SWAT project folder on the hard drive

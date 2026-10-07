@@ -8,9 +8,9 @@ is not supported by any of the run functions.}
 check_arg_names(dot_args, version)
 }
 \arguments{
-\item{version}{Version of the SWAT project, one of 'plus', '2012'}
+\item{dot_args}{Character vector of provided input arguments}
 
-\item{arg_names}{Character vector of provided input arguments}
+\item{version}{Version of the SWAT project, one of 'plus', '2012'}
 }
 \value{
 Error message if argument is not supported

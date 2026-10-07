@@ -15,8 +15,6 @@ initialize_run_info(model_setup, output, project_path, run_path)
 (i.e. txtinout folder)}
 
 \item{run_path}{Path to the SWAT project run folder}
-
-\item{sim_results}{List of simulation results from the SWAT model runs}
 }
 \description{
 Prepare run info for the simulation experiment

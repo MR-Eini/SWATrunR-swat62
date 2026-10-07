@@ -41,8 +41,7 @@
 #'   'res', and 'aqu') which will be used in the calibration.cal for
 #'   conditioning of parameter changes.
 #'
-#' @importFrom lubridate as_date ceiling_date int_end int_start interval
-#'   leap_year yday year years ymd
+#' @importFrom lubridate as_date ceiling_date int_end int_start interval leap_year yday year years ymd
 #' @importFrom dplyr case_when mutate select %>%
 #' @importFrom purrr map_chr set_names
 #' @importFrom readr read_lines read_table
@@ -428,7 +427,7 @@ translate_sequence <- function(val_seq) {
 #'
 #' @param cond Character string that defines condition for the variable `var`.
 #' @param var Variable to which the condition is applied
-#' @param conds_all List of possible values for condition variables ('hsg',
+#' @param cond_all List of possible values for condition variables ('hsg',
 #'   'texture', 'plant', 'landuse').
 #'
 #' @importFrom dplyr %>%

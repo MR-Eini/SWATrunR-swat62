@@ -7,11 +7,11 @@
 split_line(chr, start, end)
 }
 \arguments{
+\item{chr}{Value supplied as chr to this internal helper.}
+
 \item{start}{Index vector indicating the start values of a value}
 
 \item{end}{Index vector indicating the end values of a value}
-
-\item{file_i}{The i'th parameter file for a file suffix}
 }
 \description{
 Split one line in a parameter file into the individual values of the table

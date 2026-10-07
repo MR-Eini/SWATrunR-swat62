@@ -22,7 +22,7 @@
 #'   are \code{version = c('2012', 'plus')}. This argument is required to
 #'   load SWAT projects and shape files.
 #' @param revision Numeric value to define the model revision ofthe loaded SWAT
-#'   project. See \code{\link[SWATdata]{SWATdata}} for valid revision numbers.
+#'   project. See \href{https://github.com/chrisschuerz/SWATdata}{SWATdata} for valid revision numbers.
 #'   When loading a SWAT project and leaving \code{revision = NULL}, then the
 #'   most recent model revision is loaded by default.
 #'
